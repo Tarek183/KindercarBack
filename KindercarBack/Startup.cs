@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
 
 namespace KindercarBack
 {
@@ -27,7 +28,14 @@ namespace KindercarBack
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-    
+            services.AddMvc()
+                .AddNewtonsoftJson(options => {
+                    var resolver = options.SerializerSettings.ContractResolver;
+                    if (resolver != null)
+
+                        (resolver as DefaultContractResolver).NamingStrategy = null;
+                    
+                });
             services.AddDbContext<MyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
         }
 
